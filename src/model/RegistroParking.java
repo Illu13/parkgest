@@ -25,11 +25,11 @@ public class RegistroParking implements Serializable {
 	@Column(name="hora_salida")
 	private Timestamp horaSalida;
 
-	private byte pagado;
+	private int pagado;
 
 	//bi-directional many-to-one association to Vehiculo
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="matricula")
+	@JoinColumn(name="id_vehiculo")
 	private Vehiculo vehiculo;
 
 	public RegistroParking() {
@@ -59,12 +59,12 @@ public class RegistroParking implements Serializable {
 		this.horaSalida = horaSalida;
 	}
 
-	public byte getPagado() {
+	public int getPagado() {
 		return this.pagado;
 	}
 
-	public void setPagado(byte pagado) {
-		this.pagado = pagado;
+	public void setPagado(int i) {
+		this.pagado = i;
 	}
 
 	public Vehiculo getVehiculo() {

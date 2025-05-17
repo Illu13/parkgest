@@ -85,7 +85,6 @@ public class Tarifa implements Serializable {
 		return cliente;
 	}
 	
-	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

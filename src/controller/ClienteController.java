@@ -1,6 +1,5 @@
 package controller;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -19,7 +18,7 @@ public class ClienteController {
 
 		EntityManager em = entityManagerFactory.createEntityManager();
 
-		Query q = em.createNativeQuery("SELECT * FROM cliente;", Cliente.class);
+		Query q = em.createNativeQuery("SELECT * FROM cliente order by nombre;", Cliente.class);
 
 		List<Cliente> locs = (List<Cliente>) q.getResultList();
 
