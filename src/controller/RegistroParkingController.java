@@ -5,7 +5,10 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,23 +57,20 @@ public class RegistroParkingController {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		String fechaFormateada = formatter.format(fechaActual);
 
-		
 		List<Vehiculo> lv = c.getVehiculos();
-		List<RegistroParking> lrp = new ArrayList<RegistroParking>();
-		
-		for(Vehiculo v : lv) {
-			List<RegistroParking> rp = v.getRegistroParkings();
-			lrp.addAll(rp);
-		}
-		
-		for (RegistroParking rp : lrp) {
-			System.out.println(rp.getVehiculo());
-		}
-		
+		Map<Vehiculo, List<RegistroParking>> registrosPorVehiculo = new HashMap<>();
 
-//		 Formatear fecha
+		for (Vehiculo v : lv) {
+		    // supongamos que tienes un método en tu DAO que te devuelve
+		    // todos los registros de un vehículo concreto
+		    List<RegistroParking> regs = v.getRegistroParkings();
+		    registrosPorVehiculo.put(v, regs);
+		}
+
+
 		try {
-			writer = new PdfWriter("facturas/" + c.getNombre() + ".pdf");
+			Date d = new Date();
+			writer = new PdfWriter("facturas/" + c.getNombre() + d.getTime() +".pdf");
 			PdfDocument pdf = new PdfDocument(writer);
 			document = new Document(pdf);
 
@@ -80,42 +80,61 @@ public class RegistroParkingController {
 			document.add(encabezado);
 			document.add(new Paragraph("Parking Comares"));
 			document.add(new Paragraph("Cliente: " + c.getNombre()));
+			document.add(new Paragraph("DNI del cliente: " + c.getDni()));
+			document.add(new Paragraph("Teléfono del cliente: " + c.getTelefono()));
+			document.add(new Paragraph("Localidad del cliente: " + c.getLocalidad().getNombre()));
 			document.add(new Paragraph("Fecha: " + fechaFormateada));
+			document.add(new Paragraph("CIF: A12345678").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Dirección: calle Juego de Pelota").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Teléfono de la empresa: 612 345 678").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Dirección: calle Juego de Pelota").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Email: parkingcomares@gmail.com").setTextAlignment(TextAlignment.RIGHT));
 			float[] columnWidths = { 3, 1, 1, 1 };
 			Table tabla = new Table(columnWidths);
 			tabla.addHeaderCell("Matrícula");
 			tabla.addHeaderCell("Horas");
 			tabla.addHeaderCell("Precio por hora");
 			tabla.addHeaderCell("Total");
-			
-
-			for(RegistroParking rp : lrp) {
-		        long diferenciaMs = rp.getHoraSalida().getTime() - rp.getHoraEntrada().getTime();
-		        diferenciaHoras += (double) diferenciaMs / (3600 * 1000);
-			}
-			
-	        DecimalFormat df = new DecimalFormat("#.##");
-	        	        String horasFormateadas = df.format(diferenciaHoras);
-			
+			DecimalFormat df = new DecimalFormat("#.##");
 			float precioClienteHora = c.getTarifa().getPreciohora();
-			double precioHora = diferenciaHoras * precioClienteHora;
-			double iva = precioHora * 0.16;
-	        String precioTotalFormateado = df.format(precioHora);
-	        String ivaFormateado = df.format(iva);
-	        String precioConImpuestos = df.format(precioHora + iva);
+			float precioTotal = 0;
+			for (Map.Entry<Vehiculo, List<RegistroParking>> entry : registrosPorVehiculo.entrySet()) {
+				diferenciaHoras = 0;
+				float precioCocheConcreto = 0;
+			    Vehiculo veh = entry.getKey();
+			    List<RegistroParking> listaReg = entry.getValue();
+			    System.out.println("Vehículo: " + veh.getMatricula() + " tiene " + listaReg.size() + " registros.");
+			    for (RegistroParking rp : listaReg) {
+					long diferenciaMs = rp.getHoraSalida().getTime() - rp.getHoraEntrada().getTime();
+					diferenciaHoras += (double) diferenciaMs / (3600 * 1000);
+					precioCocheConcreto = (float) (diferenciaHoras * precioClienteHora);
+					System.out.println(diferenciaHoras);
+				}
+				String horasFormateadas = df.format(diferenciaHoras);
+				String precioCocheConcretoString = df.format(precioCocheConcreto);
+				tabla.addCell(veh.getMatricula());
+				tabla.addCell("" + horasFormateadas);
+				tabla.addCell("" + precioClienteHora + "€");
+				tabla.addCell("" + precioCocheConcretoString + "€");
+			    precioTotal += precioCocheConcreto;
+			}
 
 			
-			tabla.addCell("Horas parking");
-			tabla.addCell("" + horasFormateadas);
-			tabla.addCell("" + precioClienteHora + "€");
-			tabla.addCell("" + precioTotalFormateado  + "€");
+
+			double iva = precioTotal * 0.16;
+			String precioTotalFormateado = df.format(precioTotal);
+			String ivaFormateado = df.format(iva);
+			String precioConImpuestos = df.format(precioTotal + iva);
+
+		
 
 			document.add(tabla);
 
 			// Totales
-			document.add(new Paragraph("\nSubtotal: " + precioTotalFormateado  + "€").setTextAlignment(TextAlignment.RIGHT));
+			document.add(
+					new Paragraph("\nSubtotal: " + precioTotalFormateado + "€").setTextAlignment(TextAlignment.RIGHT));
 			document.add(new Paragraph("IVA (16%): " + ivaFormateado + "€").setTextAlignment(TextAlignment.RIGHT));
-			document.add(new Paragraph("Total: " + precioConImpuestos  + "€").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Total: " + precioConImpuestos + "€").setTextAlignment(TextAlignment.RIGHT));
 
 			document.close();
 		} catch (IOException e) {

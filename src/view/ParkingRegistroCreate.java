@@ -112,26 +112,31 @@ public class ParkingRegistroCreate extends JPanel {
 				RegistroParking rp = new RegistroParking();
 				Vehiculo v = VehiculoController.findVehiculoByMatricula(matricula);
 				if (v != null) {
-					addParkingRegistry(dcEntrada, dcSalida, pagado, rp, v);
-
+					if (!addParkingRegistry(dcEntrada, dcSalida, pagado, rp, v)) {
+						return;
+					}
 				} else {
 					v = new Vehiculo();
 					v.setMatricula(matricula);
 					VehiculoController.insertar(v);
-					addParkingRegistry(dcEntrada, dcSalida, pagado, rp, v);
+					if (!addParkingRegistry(dcEntrada, dcSalida, pagado, rp, v)) {
+						return;
+					}
 
 				}
 
 				if (RegistroParkingController.insertar(rp)) {
-					JOptionPane.showMessageDialog(null, "Inserción exitosa", "El registro del parking se ha insertado satisfactoriamente",
+					JOptionPane.showMessageDialog(null, "Inserción exitosa",
+							"El registro del parking se ha insertado satisfactoriamente",
 							JOptionPane.INFORMATION_MESSAGE, null);
 					tfMatricula.setText("");
-					cbPagado.setSelected(false);	
+					cbPagado.setSelected(false);
 				} else {
-					JOptionPane.showMessageDialog(null, "Error: el registro del parking no se ha insertado correctamente", "Información de la inserción",
-							JOptionPane.ERROR_MESSAGE, null);
+					JOptionPane.showMessageDialog(null,
+							"Error: el registro del parking no se ha insertado correctamente",
+							"Información de la inserción", JOptionPane.ERROR_MESSAGE, null);
 				}
-		
+
 			}
 
 		});
@@ -157,16 +162,26 @@ public class ParkingRegistroCreate extends JPanel {
 
 	}
 
-	private void addParkingRegistry(JDateChooser dcEntrada, JDateChooser dcSalida, boolean pagado, RegistroParking rp,
-			Vehiculo v) {
+	private boolean addParkingRegistry(JDateChooser dcEntrada, JDateChooser dcSalida, boolean pagado,
+			RegistroParking rp, Vehiculo v) {
 		rp.setVehiculo(v);
 		Timestamp tmEntrada = new Timestamp(dcEntrada.getDate().getTime());
 		Timestamp tmSalida = new Timestamp(dcSalida.getDate().getTime());
+		if (tmEntrada.getTime() > tmSalida.getTime()) {
+
+			JOptionPane.showMessageDialog(null,
+					"Error: No puedes poner que la fecha de entrada es posterior a la de salida.",
+					"Información de la inserción", JOptionPane.ERROR_MESSAGE, null);
+			return false;
+
+		}
 		rp.setHoraEntrada(tmEntrada);
 		rp.setHoraSalida(tmSalida);
 		if (pagado) {
 			rp.setPagado(1);
 		}
+
+		return true;
 	}
 
 }

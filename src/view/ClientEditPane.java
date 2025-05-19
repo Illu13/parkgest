@@ -191,10 +191,12 @@ public class ClientEditPane extends JPanel {
 				if (ClienteController.update(c)) {
 					JOptionPane.showMessageDialog(null, "Actualización exitosa", "Información de la actualización",
 							JOptionPane.INFORMATION_MESSAGE, null);
+					cbCliente.setSelectedIndex(-1);
 
 					limpiarCampos();
 
 					recargarClientes();
+
 				} else {
 					JOptionPane.showMessageDialog(null, "Error: Comprueba si el DNI introducido lo tiene otro cliente",
 							"Información de la actualización", JOptionPane.ERROR_MESSAGE, null);
@@ -217,7 +219,11 @@ public class ClientEditPane extends JPanel {
 				if (ClienteController.eliminar(c)) {
 					JOptionPane.showMessageDialog(null, "Eliminación exitosa", "Información de la eliminación",
 							JOptionPane.INFORMATION_MESSAGE, null);
+					cbCliente.setSelectedIndex(-1);
+
 					limpiarCampos();
+					recargarClientes();
+
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Ha habido un error en la eliminación",
@@ -255,9 +261,6 @@ public class ClientEditPane extends JPanel {
 			cbLocalidad.addItem(l);
 		}
 
-		for (Cliente c : clienteList) {
-			cbCliente.addItem(c);
-		}
 
 		cbCliente.setSelectedIndex(-1);
 
@@ -297,7 +300,12 @@ public class ClientEditPane extends JPanel {
 	}
 
 	private void recargarClientes() {
+		cbCliente.removeAllItems();
 		clienteList = ClienteController.findAll();
+		for (Cliente c : clienteList) {
+			cbCliente.addItem(c);
+		}
+
 	}
 	
 	private void limpiarCampos() {
@@ -307,7 +315,6 @@ public class ClientEditPane extends JPanel {
 		tfTelefono.setText("");
 		cbLocalidad.setSelectedIndex(0);
 		cbTarifa.setSelectedIndex(0);
-		cbCliente.setSelectedIndex(-1);
 	}
 
 }

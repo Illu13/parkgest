@@ -9,6 +9,7 @@
 		<class>model.RegistroParking</class>
 		<class>model.Tarifa</class>
 		<class>model.Vehiculo</class>
+		<class>model.Usuario</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver"
 				value="com.mysql.cj.jdbc.Driver" />
