@@ -127,9 +127,8 @@ public class RegistroParkingController {
 			document.add(new Paragraph("Localidad del cliente: " + c.getLocalidad().getNombre()));
 			document.add(new Paragraph("Fecha: " + fechaFormateada));
 			document.add(new Paragraph("CIF: A12345678").setTextAlignment(TextAlignment.RIGHT));
-			document.add(new Paragraph("Dirección: calle Juego de Pelota").setTextAlignment(TextAlignment.RIGHT));
+			document.add(new Paragraph("Dirección: Calle Juego de Pelota").setTextAlignment(TextAlignment.RIGHT));
 			document.add(new Paragraph("Teléfono de la empresa: 612 345 678").setTextAlignment(TextAlignment.RIGHT));
-			document.add(new Paragraph("Dirección: calle Juego de Pelota").setTextAlignment(TextAlignment.RIGHT));
 			document.add(new Paragraph("Email: parkingcomares@gmail.com").setTextAlignment(TextAlignment.RIGHT));
 			float[] columnWidths = { 3, 1, 1, 1 };
 			Table tabla = new Table(columnWidths);
