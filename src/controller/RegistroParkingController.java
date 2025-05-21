@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -45,6 +47,46 @@ public class RegistroParkingController {
 		} finally {
 			em.close(); // Cerrar EntityManager siempre
 		}
+	}
+	
+	public static boolean update(RegistroParking c) {
+
+		EntityManager em = entityManagerFactory.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.merge(c);
+			tx.commit(); // Mover commit dentro del try
+			return true;
+		} catch (Exception e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback(); // Rollback si la transacción está activa
+			}
+			return false;
+		} finally {
+			em.close(); // Cerrar EntityManager siempre
+		}
+	}
+	
+	public static RegistroParking encontrarUltimoRegistroVehiculo(Vehiculo v) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+
+		Query q = em.createNativeQuery(
+			    "SELECT * FROM registro_parking WHERE id_vehiculo = ? ORDER BY hora_entrada DESC", 
+			    RegistroParking.class
+			);
+			q.setParameter(1, v.getId());
+			q.setMaxResults(1);
+		RegistroParking es;
+		try {
+		es = (RegistroParking) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+			es = null;
+		} finally {
+			em.close();
+		}
+		return es;
 	}
 
 	public static void crearFactura(Cliente c) {
