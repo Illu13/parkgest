@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 476, 361);
+		setBounds(100, 100, 302, 358);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -248,25 +248,26 @@ public class MainFrame extends JFrame {
 		JLabel lblNewLabel = new JLabel("Nombre");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 2;
-		gbc_lblNewLabel.gridy = 3;
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 0;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
+				
+				tfNombre = new JTextField();
+				GridBagConstraints gbc_tfNombre = new GridBagConstraints();
+				gbc_tfNombre.gridwidth = 4;
+				gbc_tfNombre.insets = new Insets(0, 0, 5, 5);
+				gbc_tfNombre.fill = GridBagConstraints.HORIZONTAL;
+				gbc_tfNombre.gridx = 1;
+				gbc_tfNombre.gridy = 0;
+				contentPane.add(tfNombre, gbc_tfNombre);
+				tfNombre.setColumns(10);
 		
-		tfNombre = new JTextField();
-		GridBagConstraints gbc_tfNombre = new GridBagConstraints();
-		gbc_tfNombre.insets = new Insets(0, 0, 5, 5);
-		gbc_tfNombre.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfNombre.gridx = 5;
-		gbc_tfNombre.gridy = 3;
-		contentPane.add(tfNombre, gbc_tfNombre);
-		tfNombre.setColumns(10);
-
-		JLabel lblNewLabel_1 = new JLabel("Contraseña");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.gridx = 2;
-		gbc_lblNewLabel_1.gridy = 6;
-		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
+				JLabel lblNewLabel_1 = new JLabel("Contraseña");
+				GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+				gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+				gbc_lblNewLabel_1.gridx = 0;
+				gbc_lblNewLabel_1.gridy = 1;
+				contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		JButton btnLogin = new JButton("Identificarse");
 		btnLogin.addActionListener(new ActionListener() {
@@ -295,15 +296,16 @@ public class MainFrame extends JFrame {
 		
 		tfPass = new JPasswordField();
 		GridBagConstraints gbc_tfPass = new GridBagConstraints();
+		gbc_tfPass.gridwidth = 4;
 		gbc_tfPass.insets = new Insets(0, 0, 5, 5);
 		gbc_tfPass.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfPass.gridx = 5;
-		gbc_tfPass.gridy = 6;
+		gbc_tfPass.gridx = 1;
+		gbc_tfPass.gridy = 1;
 		contentPane.add(tfPass, gbc_tfPass);
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
-		gbc_btnLogin.insets = new Insets(0, 0, 0, 5);
-		gbc_btnLogin.gridx = 5;
-		gbc_btnLogin.gridy = 9;
+		gbc_btnLogin.insets = new Insets(0, 0, 5, 5);
+		gbc_btnLogin.gridx = 1;
+		gbc_btnLogin.gridy = 2;
 		contentPane.add(btnLogin, gbc_btnLogin);
 	}
 
