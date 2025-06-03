@@ -53,7 +53,7 @@ public class ClienteController {
 		try {
 			tx.begin();
 			em.merge(c);
-			tx.commit(); // Mover commit dentro del try
+			tx.commit(); 
 			return true;
 		} catch (Exception e) {
 			if (tx != null && tx.isActive()) {

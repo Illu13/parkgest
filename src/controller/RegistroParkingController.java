@@ -112,7 +112,7 @@ public class RegistroParkingController {
 
 		try {
 			Date d = new Date();
-			writer = new PdfWriter("facturas/" + c.getNombre() + d.getTime() +".pdf");
+			writer = new PdfWriter("C:/Users/isaac/Desktop/facturas/" + c.getNombre() + d.getTime() +".pdf");
 			PdfDocument pdf = new PdfDocument(writer);
 			document = new Document(pdf);
 
@@ -148,6 +148,7 @@ public class RegistroParkingController {
 			    for (RegistroParking rp : listaReg) {
 					long diferenciaMs = rp.getHoraSalida().getTime() - rp.getHoraEntrada().getTime();
 					diferenciaHoras += (double) diferenciaMs / (3600 * 1000);
+					diferenciaHoras = Math.round(diferenciaHoras * 100.0) / 100.0;
 					precioCocheConcreto = (float) (diferenciaHoras * precioClienteHora);
 					System.out.println(diferenciaHoras);
 				}

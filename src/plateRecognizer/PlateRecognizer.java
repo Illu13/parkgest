@@ -30,8 +30,8 @@ public class PlateRecognizer {
 	public static void main(String[] args) {
 
 		try {
-			File carpeta = new File("fotosEntrada");
-			File carpetaSalidas = new File("fotosSalida");
+			File carpeta = new File("C:/Users/isaac/Desktop/fotosEntrada");
+			File carpetaSalidas = new File("C:/Users/isaac/Desktop/fotosSalida");
 
 			while (true) {
 				System.out.println("Revisando carpetas.");
@@ -78,6 +78,7 @@ public class PlateRecognizer {
 					image.delete();
 					response.close();
 					httpClient.close();
+					Thread.sleep(3000);
 				}
 				
 				for (int i = 0; i < salidas.length; i++) {
@@ -111,6 +112,7 @@ public class PlateRecognizer {
 					image.delete();
 					response.close();
 					httpClient.close();
+					Thread.sleep(3000);
 				}
 
 
